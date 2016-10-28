@@ -1,6 +1,7 @@
 <?php
 namespace Stories\Model\Table;
 
+use Cake\Core\Configure;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -31,9 +32,11 @@ class StoriesTable extends Table
         $this->primaryKey('id');
         $this->addBehavior('Timestamp');
 
+        $userConfig = Configure::read('Stories.Users');
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
-            'className' => 'Users'
+            'className' => $userConfig['table'],
+            'targetKey' => $userConfig['id']
         ]);
         $this->belongsToMany('Phinxlog', [
             'foreignKey' => 'story_id',

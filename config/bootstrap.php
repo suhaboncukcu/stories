@@ -1,6 +1,7 @@
 <?php 
-use Cake\Log\Log;
+use Cake\Core\Configure;
 use Cake\Event\EventManager;
+use Cake\Log\Log;
 use Stories\Middleware\LoggerMiddleware;
 
 
@@ -12,9 +13,13 @@ Log::config('story', [
 ]);
 
 
-
 EventManager::instance()->on(
 	'Server.buildMiddleware',
 	function ($event, $middleware) {
     	$middleware->add(new LoggerMiddleware());
 	});
+
+
+collection((array)Configure::read('Stories.config'))->each(function ($file) {
+    Configure::load($file);
+});
