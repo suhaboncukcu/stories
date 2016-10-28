@@ -7,7 +7,7 @@ use Stories\Middleware\LoggerMiddleware;
 
 Log::config('story', [
     'className' => 'Stories.Database',
-    'model' => 'Stories',
+    'model' => 'Stories.Stories',
     'scopes' => ['registered_user'],
 ]);
 
