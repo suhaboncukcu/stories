@@ -1,5 +1,5 @@
 {
-    "name": "suhaboncukcu/Stories",
+    "name": "suhaboncukcu/stories",
     "description": "Stories plugin for CakePHP",
     "type": "cakephp-plugin",
     "require": {
