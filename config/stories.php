@@ -3,7 +3,7 @@ return [
     'Stories' => [
         'Users' => [
             'table' => 'MyUsers',
-            'column' => 'id'
+            'id' => 'id'
         ]
     ]
 ];
