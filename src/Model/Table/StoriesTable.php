@@ -36,7 +36,7 @@ class StoriesTable extends Table
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
             'className' => $userConfig['table'],
-            'targetKey' => $userConfig['id']
+            'targetForeignKey' => $userConfig['id']
         ]);
         $this->belongsToMany('Phinxlog', [
             'foreignKey' => 'story_id',
