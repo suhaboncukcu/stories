@@ -49,7 +49,9 @@ class DatabaseLog extends BaseLog
         $data['user_id'] = $message['user_id'];
         $data['webroot'] = $message['webroot'];
         $data['plugin'] = $message['plugin'];
-        $data['data_load'] = $message['data_load'];
+        if(Configure::read('Stories.DataLogger') === true) {
+            $data['data_load'] = $message['data_load'];
+        }
 
         return $data;
     }
