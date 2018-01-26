@@ -22,14 +22,14 @@ class LoggerMiddleware
 
 
 		//don't log anything if user is not present
-		if(!$attributes['session']->read('Auth.User.id')) {
+		if(!$request->getSession()->read('Auth.User.id')) {
 			return $response;
 		}
 
 		//prepare the message
 		$message = json_encode([
         	'ip' => $_SERVER['REMOTE_ADDR'],
-        	'user_id' => @$attributes['session']->read('Auth.User.id'),
+        	'user_id' => @$request->getSession()->read('Auth.User.id'),
         	'action' => $attributes['params']['action'],
         	'controller' => $attributes['params']['controller'],
         	'path' => $path,
