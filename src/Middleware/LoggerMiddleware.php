@@ -12,45 +12,57 @@ class LoggerMiddleware
         // Calling $next() delegates control to the *next* middleware
         // In your application's queue.
         $response = $next($request, $response);
-
+        
         // Get the URI
-		$uri = $request->getUri();
+        $uri = $request->getUri();
 
-		// Read data out of the URI.
-		$path = $uri->getPath();
+        // Read data out of the URI.
+        $path = $uri->getPath();
 
-		$attributes = $request->getAttributes();
+        $attributes = $request->getAttributes();
 
         // do not log specified plugins
         if(in_array($attributes['params']['plugin'], Configure::read('Stories.DontLog.Plugins'))) {
             return $response;
         }
 
-		//don't log anything if user is not present
-		if(!$request->getSession()->read('Auth.User.id')) {
-			return $response;
-		}
 
-		//prepare the message
-		$message = json_encode([
-        	'ip' => $_SERVER['REMOTE_ADDR'],
-        	'user_id' => @$request->getSession()->read('Auth.User.id'),
-        	'action' => $attributes['params']['action'],
-        	'controller' => $attributes['params']['controller'],
-        	'path' => $path,
-        	'plugin' => $attributes['params']['plugin'],
-        	'webroot' => $attributes['webroot'],
-        ]);
+        //don't log anything if user is not present
+        if(!$request->getSession()->read('Auth.User.id')) {
+            return $response;
+        }
 
-		//drop current logs. 
-		$debug = Log::config('debug');
-		$error = Log::config('error');
-		Log::drop('debug');
-		Log::drop('error');
-		
-		//log to register_user scope
+        //prepare the message
+        $messageLoad = [
+            'ip' => $_SERVER['REMOTE_ADDR'],
+            'user_id' => @$request->getSession()->read('Auth.User.id'),
+            'action' => $attributes['params']['action'],
+            'controller' => $attributes['params']['controller'],
+            'path' => $path,
+            'plugin' => $attributes['params']['plugin'],
+            'webroot' => $attributes['webroot'],
+        ];
+
+        // log data if it is allowed on Configuration
+        if(Configure::read('Stories.DataLogger') === true) {
+            $dataLoad = [];
+            $dataLoad['pass'] = $attributes['params']['pass'];
+            $dataLoad['query'] = $request->getQuery();
+            $dataLoad['postData'] = $request->getData();
+            $messageLoad['data_load'] = $dataLoad;
+        }
+
+        $message = json_encode($messageLoad);
+
+        //drop current logs. 
+        $debug = Log::config('debug');
+        $error = Log::config('error');
+        Log::drop('debug');
+        Log::drop('error');
+        
+        //log to register_user scope
         Log::notice($message,[
-        		'scope' => ['registered_user']
+                'scope' => ['registered_user']
         ]);
 
         //reset default logs. 

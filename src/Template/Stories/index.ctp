@@ -47,6 +47,7 @@ $this->end();
                 <th><?= $this->Paginator->sort('level') ?></th>
                 <th><?= $this->Paginator->sort('webroot') ?></th>
                 <th><?= $this->Paginator->sort('currentpath') ?></th>
+                <th><?= $this->Paginator->sort('data_load') ?></th>
                 <th><?= $this->Paginator->sort('plugin') ?></th>
                 <th><?= $this->Paginator->sort('created') ?></th>
                 <th class="actions"><?= __('Actions') ?></th>
@@ -64,6 +65,7 @@ $this->end();
                 <td><?= h($story->webroot) ?></td>
                 <td><?= h($story->currentpath) ?></td>
                 <td><?= h($story->plugin) ?></td>
+                <td><?= h($story->data_load) ?></td>
                 <td><?= h($story->created) ?></td>
                 <td class="actions">
                     <?= $this->Html->link(__('View'), ['action' => 'view', $story->id]) ?>

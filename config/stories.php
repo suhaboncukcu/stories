@@ -9,6 +9,9 @@ return [
         	'Plugins' => [
         		'DebugKit'
         	]
+        ],
+        [
+            'DataLogger' => true
         ]
     ]
 ];

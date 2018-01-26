@@ -1,10 +1,11 @@
 <?php 
 use Cake\Core\Configure;
+use Cake\Database\Type;
 use Cake\Event\EventManager;
 use Cake\Log\Log;
 use Stories\Middleware\LoggerMiddleware;
 
-
+Type::map('json', 'Cake\Database\Type\JsonType');
 
 Log::config('story', [
     'className' => 'Stories.Database',

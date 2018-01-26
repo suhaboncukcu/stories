@@ -53,6 +53,10 @@
             <td><?= $this->Number->format($story->ip) ?></td>
         </tr>
         <tr>
+            <th><?= __('Data Load') ?></th>
+            <td><?= h($story->data_load) ?></td>
+        </tr>
+        <tr>
             <th><?= __('Created') ?></th>
             <td><?= h($story->created) ?></td>
         </tr>

@@ -2,11 +2,13 @@
 namespace Stories\Model\Table;
 
 use Cake\Core\Configure;
+use Cake\Database\Schema\TableSchema;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
-use Cake\Log\Log; 
+use Cake\Log\Log;
+
 
 /**
  * Stories Model
@@ -16,6 +18,16 @@ use Cake\Log\Log;
  */
 class StoriesTable extends Table
 {
+    /**
+     * @param TableSchema $schema
+     *
+     * @return TableSchema
+     */
+    protected function _initializeSchema(TableSchema $schema)
+    {
+        $schema->setColumnType('data_load', 'json');
+        return $schema;
+    }
     
     /**
      * Initialize method
