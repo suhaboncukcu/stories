@@ -18,9 +18,9 @@ composer require suhaboncukcu/Stories
 
 //load plugin in your bootstrap.php
 Plugin::load('Stories', ['bootstrap' => true, 'routes' => true]);
+Configure::load('stories', 'default', true);
 
-
-bin/cake bake migrations migrate -p Stories
+bin/cake migrations migrate -p Stories
 
 ```
 
