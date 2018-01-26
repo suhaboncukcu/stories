@@ -1,7 +1,9 @@
 <?php
 namespace Stories\Middleware;
 
+use Cake\Core\Configure;
 use Cake\Log\Log;
+
 
 class LoggerMiddleware
 {
@@ -19,7 +21,10 @@ class LoggerMiddleware
 
 		$attributes = $request->getAttributes();
 
-
+        // do not log specified plugins
+        if(in_array($attributes['params']['plugin'], Configure::read('Stories.DontLog.Plugins'))) {
+            return $response;
+        }
 
 		//don't log anything if user is not present
 		if(!$request->getSession()->read('Auth.User.id')) {

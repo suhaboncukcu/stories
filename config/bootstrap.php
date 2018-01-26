@@ -20,6 +20,7 @@ EventManager::instance()->on(
 	});
 
 
+Configure::load('Stories.stories');
 collection((array)Configure::read('Stories.config'))->each(function ($file) {
     Configure::load($file);
 });

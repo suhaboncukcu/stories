@@ -4,6 +4,11 @@ return [
         'Users' => [
             'table' => 'MyUsers',
             'id' => 'id'
+        ], 
+        'DontLog' => [
+        	'Plugins' => [
+        		'DebugKit'
+        	]
         ]
     ]
 ];
