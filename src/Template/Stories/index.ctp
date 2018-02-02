@@ -2,12 +2,6 @@
 $this->layout = 'default';
 
 
-$this->start('top-menu');
-echo $this->element('Menus/AdminMenuBreadcrumbed',[
-    "title" =>  __('Story'),
-    "breadcrumb" => false
-]);
-$this->end();
 
 ?>
 

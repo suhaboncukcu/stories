@@ -3,6 +3,7 @@ namespace Stories\Middleware;
 
 use Cake\Core\Configure;
 use Cake\Log\Log;
+use Cake\Utility\Hash;
 
 
 class LoggerMiddleware
@@ -12,7 +13,7 @@ class LoggerMiddleware
         // Calling $next() delegates control to the *next* middleware
         // In your application's queue.
         $response = $next($request, $response);
-        
+
         // Get the URI
         $uri = $request->getUri();
 
@@ -50,7 +51,15 @@ class LoggerMiddleware
             $dataLoad['query'] = $request->getQuery();
             $dataLoad['postData'] = $request->getData();
             $messageLoad['data_load'] = $dataLoad;
+
+            $dataLoadArr = Hash::merge($dataLoad['postData'], $dataLoad['query'], $dataLoad['pass']);
+            if(count(array_intersect(array_keys($dataLoadArr), Configure::read('Stories.DontLog.Fields'))) > 0) {
+                return $response;
+            }
         }
+
+
+
 
         $message = json_encode($messageLoad);
 
@@ -59,10 +68,10 @@ class LoggerMiddleware
         $error = Log::config('error');
         Log::drop('debug');
         Log::drop('error');
-        
+
         //log to register_user scope
         Log::notice($message,[
-                'scope' => ['registered_user']
+            'scope' => ['registered_user']
         ]);
 
         //reset default logs. 
