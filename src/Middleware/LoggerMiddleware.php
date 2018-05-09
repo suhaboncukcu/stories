@@ -64,8 +64,8 @@ class LoggerMiddleware
         $message = json_encode($messageLoad);
 
         //drop current logs. 
-        $debug = Log::getConfig(['debug']);
-        $error = Log::getConfig(['error']);
+        $debug = Log::getConfig('debug');
+        $error = Log::getConfig('error');
         Log::drop('debug');
         Log::drop('error');
 
