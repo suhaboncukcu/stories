@@ -7,7 +7,7 @@ use Stories\Middleware\LoggerMiddleware;
 
 Type::map('json', 'Cake\Database\Type\JsonType');
 
-Log::config('story', [
+Log::setConfig('story', [
     'className' => 'Stories.Database',
     'model' => 'Stories.Stories',
     'scopes' => ['registered_user'],
