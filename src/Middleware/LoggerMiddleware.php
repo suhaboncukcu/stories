@@ -64,8 +64,8 @@ class LoggerMiddleware
         $message = json_encode($messageLoad);
 
         //drop current logs. 
-        $debug = Log::config('debug');
-        $error = Log::config('error');
+        $debug = Log::setConfig('debug');
+        $error = Log::setConfig('error');
         Log::drop('debug');
         Log::drop('error');
 
@@ -75,8 +75,8 @@ class LoggerMiddleware
         ]);
 
         //reset default logs. 
-        Log::config('debug', $debug);
-        Log::config('error', $error);
+        Log::setConfig('debug', $debug);
+        Log::setConfig('error', $error);
 
         return $response;
     }
