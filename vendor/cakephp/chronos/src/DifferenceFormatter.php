@@ -20,6 +20,14 @@ namespace Cake\Chronos;
  */
 class DifferenceFormatter
 {
+
+    /**
+     * The text translator object
+     *
+     * @var \Cake\Chronos\Translator
+     */
+    protected $translate;
+
     /**
      * Constructor.
      *
@@ -37,7 +45,7 @@ class DifferenceFormatter
      * @param \Cake\Chronos\ChronosInterface|null $other The datetime to compare against.
      * @param bool $absolute removes time difference modifiers ago, after, etc
      * @return string The difference between the two days in a human readable format
-     * @see Cake\Chronos\ChronosInterface::diffForHumans
+     * @see \Cake\Chronos\ChronosInterface::diffForHumans
      */
     public function diffForHumans(ChronosInterface $date, ChronosInterface $other = null, $absolute = false)
     {
@@ -76,9 +84,6 @@ class DifferenceFormatter
                 $count = $diffInterval->s;
                 $unit = 'second';
                 break;
-        }
-        if ($count === 0) {
-            $count = 1;
         }
         $time = $this->translate->plural($unit, $count, ['count' => $count]);
         if ($absolute) {

@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         1.2.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Shell\Task;
 
@@ -51,9 +51,9 @@ class ExtractTask extends Shell
     /**
      * Current file being processed
      *
-     * @var string
+     * @var string|null
      */
-    protected $_file = null;
+    protected $_file;
 
     /**
      * Contains all content waiting to be write
@@ -79,9 +79,9 @@ class ExtractTask extends Shell
     /**
      * Destination path
      *
-     * @var string
+     * @var string|null
      */
-    protected $_output = null;
+    protected $_output;
 
     /**
      * An array of directories to exclude.
@@ -93,7 +93,7 @@ class ExtractTask extends Shell
     /**
      * Holds the validation string domain to use for validation messages when extracting
      *
-     * @var bool
+     * @var string
      */
     protected $_validationDomain = 'default';
 
@@ -140,7 +140,7 @@ class ExtractTask extends Shell
                 return;
             }
             if (strtoupper($response) === 'D') {
-                $this->err('<warning>No directories selected.</warning> Please choose a directory.');
+                $this->warn('No directories selected. Please choose a directory.');
             } elseif (is_dir($response)) {
                 $this->_paths[] = $response;
                 $defaultPath = 'D';
@@ -259,7 +259,7 @@ class ExtractTask extends Shell
      */
     protected function _addTranslation($domain, $msgid, $details = [])
     {
-        $context = isset($details['msgctxt']) ? $details['msgctxt'] : "";
+        $context = isset($details['msgctxt']) ? $details['msgctxt'] : '';
 
         if (empty($this->_translations[$domain][$msgid][$context])) {
             $this->_translations[$domain][$msgid][$context] = [
@@ -311,7 +311,7 @@ class ExtractTask extends Shell
     public function getOptionParser()
     {
         $parser = parent::getOptionParser();
-        $parser->description(
+        $parser->setDescription(
             'CakePHP Language String Extraction:'
         )->addOption('app', [
             'help' => 'Directory where your application is located.'
@@ -364,6 +364,7 @@ class ExtractTask extends Shell
      */
     protected function _extractTokens()
     {
+        /** @var \Cake\Shell\Helper\ProgressHelper $progress */
         $progress = $this->helper('progress');
         $progress->init(['total' => count($this->_files)]);
         $isVerbose = $this->param('verbose');
@@ -438,6 +439,7 @@ class ExtractTask extends Shell
                 $strings = $this->_getStrings($position, $mapCount);
 
                 if ($mapCount === count($strings)) {
+                    $singular = null;
                     extract(array_combine($map, $strings));
                     $domain = isset($domain) ? $domain : 'default';
                     $details = [
@@ -484,13 +486,13 @@ class ExtractTask extends Shell
                         $occurrences[] = $file . ':' . implode(';', $lines);
                     }
                     $occurrences = implode("\n#: ", $occurrences);
-                    $header = "";
+                    $header = '';
                     if (!$this->param('no-location')) {
                         $header = '#: ' . str_replace(DIRECTORY_SEPARATOR, '/', str_replace($paths, '', $occurrences)) . "\n";
                     }
 
                     $sentence = '';
-                    if ($context !== "") {
+                    if ($context !== '') {
                         $sentence .= "msgctxt \"{$context}\"\n";
                     }
                     if ($plural === false) {
@@ -569,7 +571,7 @@ class ExtractTask extends Shell
                 if (strtoupper($response) === 'N') {
                     $response = '';
                     while (!$response) {
-                        $response = $this->in("What would you like to name this file?", null, 'new_' . $filename);
+                        $response = $this->in('What would you like to name this file?', null, 'new_' . $filename);
                         $File = new File($this->_output . $response);
                         $filename = $response;
                     }
@@ -596,7 +598,7 @@ class ExtractTask extends Shell
         $output .= "msgid \"\"\n";
         $output .= "msgstr \"\"\n";
         $output .= "\"Project-Id-Version: PROJECT VERSION\\n\"\n";
-        $output .= "\"POT-Creation-Date: " . date("Y-m-d H:iO") . "\\n\"\n";
+        $output .= '"POT-Creation-Date: ' . date('Y-m-d H:iO') . "\\n\"\n";
         $output .= "\"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\\n\"\n";
         $output .= "\"Last-Translator: NAME <EMAIL@ADDRESS>\\n\"\n";
         $output .= "\"Language-Team: LANGUAGE <EMAIL@ADDRESS>\\n\"\n";
@@ -654,7 +656,7 @@ class ExtractTask extends Shell
         if ($quote === '"') {
             $string = stripcslashes($string);
         } else {
-            $string = strtr($string, ["\\'" => "'", "\\\\" => "\\"]);
+            $string = strtr($string, ["\\'" => "'", '\\\\' => '\\']);
         }
         $string = str_replace("\r\n", "\n", $string);
 

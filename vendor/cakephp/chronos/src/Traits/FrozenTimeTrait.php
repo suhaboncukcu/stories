@@ -45,7 +45,7 @@ trait FrozenTimeTrait
             return date('Y-m-d 00:00:00', strtotime($time));
         }
 
-        return preg_replace('/\d{1,2}:\d{1,2}:\d{1,2}/', '00:00:00', $time);
+        return preg_replace('/\d{1,2}:\d{1,2}:\d{1,2}(?:\.\d+)?/', '00:00:00', $time);
     }
 
     /**
@@ -54,11 +54,12 @@ trait FrozenTimeTrait
      * This method ignores all inputs and forces all inputs to 0.
      *
      * @param int $hours The hours to set (ignored)
-     * @param int $minutes The hours to set (ignored)
-     * @param int $seconds The hours to set (ignored)
+     * @param int $minutes The minutes to set (ignored)
+     * @param int $seconds The seconds to set (ignored)
+     * @param int $microseconds The microseconds to set (ignored)
      * @return static A modified Date instance.
      */
-    public function setTime($hours, $minutes, $seconds = 0)
+    public function setTime($hours, $minutes, $seconds = null, $microseconds = null)
     {
         return parent::setTime(0, 0, 0);
     }
@@ -94,7 +95,7 @@ trait FrozenTimeTrait
      *
      * Timezones have no effect on calendar dates.
      *
-     * @param DateTimeZone|string $value The DateTimeZone object or timezone name to use.
+     * @param \DateTimeZone|string $value The DateTimeZone object or timezone name to use.
      * @return $this
      */
     public function timezone($value)
@@ -107,7 +108,7 @@ trait FrozenTimeTrait
      *
      * Timezones have no effect on calendar dates.
      *
-     * @param DateTimeZone|string $value The DateTimeZone object or timezone name to use.
+     * @param \DateTimeZone|string $value The DateTimeZone object or timezone name to use.
      * @return $this
      */
     public function tz($value)
@@ -120,7 +121,7 @@ trait FrozenTimeTrait
      *
      * Timezones have no effect on calendar dates.
      *
-     * @param DateTimeZone|string $value The DateTimeZone object or timezone name to use.
+     * @param \DateTimeZone|string $value The DateTimeZone object or timezone name to use.
      * @return $this
      */
     public function setTimezone($value)

@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Database;
 
@@ -87,10 +87,11 @@ trait SqlDialectTrait
     public function queryTranslator($type)
     {
         return function ($query) use ($type) {
-            if ($this->autoQuoting()) {
+            if ($this->isAutoQuotingEnabled()) {
                 $query = (new IdentifierQuoter($this))->quote($query);
             }
 
+            /** @var \Cake\ORM\Query $query */
             $query = $this->{'_' . $type . 'QueryTranslator'}($query);
             $translators = $this->_expressionTranslators();
             if (!$translators) {
@@ -178,6 +179,43 @@ trait SqlDialectTrait
         if (!$hadAlias) {
             return $query;
         }
+
+        return $this->_removeAliasesFromConditions($query);
+    }
+
+    /**
+     * Apply translation steps to update queries.
+     *
+     * Chops out aliases on update query conditions as not all database dialects do support
+     * aliases in update queries.
+     *
+     * Just like for delete queries, joins are currently not supported for update queries.
+     *
+     * @param \Cake\Database\Query $query The query to translate
+     * @return \Cake\Database\Query The modified query
+     */
+    protected function _updateQueryTranslator($query)
+    {
+        return $this->_removeAliasesFromConditions($query);
+    }
+
+    /**
+     * Removes aliases from the `WHERE` clause of a query.
+     *
+     * @param \Cake\Database\Query $query The query to process.
+     * @return \Cake\Database\Query The modified query.
+     * @throws \RuntimeException In case the processed query contains any joins, as removing
+     *  aliases from the conditions can break references to the joined tables.
+     */
+    protected function _removeAliasesFromConditions($query)
+    {
+        if ($query->clause('join')) {
+            throw new \RuntimeException(
+                'Aliases are being removed from conditions for UPDATE/DELETE queries, ' .
+                'this can break references to joined tables.'
+            );
+        }
+
         $conditions = $query->clause('where');
         if ($conditions) {
             $conditions->traverse(function ($condition) {
@@ -197,17 +235,6 @@ trait SqlDialectTrait
             });
         }
 
-        return $query;
-    }
-
-    /**
-     * Apply translation steps to update queries.
-     *
-     * @param \Cake\Database\Query $query The query to translate
-     * @return \Cake\Database\Query The modified query
-     */
-    protected function _updateQueryTranslator($query)
-    {
         return $query;
     }
 

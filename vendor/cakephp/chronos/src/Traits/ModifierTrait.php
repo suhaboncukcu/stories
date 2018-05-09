@@ -90,7 +90,7 @@ trait ModifierTrait
     }
 
     /**
-     * Set the first day of week
+     * Set the last day of week
      *
      * @param int $day The day the week ends with.
      * @return void
@@ -113,17 +113,20 @@ trait ModifierTrait
      */
     public function setDate($year, $month, $day)
     {
-        // Workaround for PHP issue.
-        $date = $this->modify('+0 day');
+        return $this->modify('+0 day')->setDateParent($year, $month, $day);
+    }
 
-        if ($this instanceof DateTimeImmutable) {
-            // Reflection is necessary to access the parent method
-            // of the immutable object
-            $method = new \ReflectionMethod('DateTimeImmutable', 'setDate');
-
-            return $method->invoke($date, $year, $month, $day);
-        }
-
+    /**
+     * Just calling to parent setDate
+     * It used in overwritten setDate
+     *
+     * @param int $year The year to set.
+     * @param int $month The month to set.
+     * @param int $day The day to set.
+     * @return static
+     */
+    private function setDateParent($year, $month, $day)
+    {
         return parent::setDate($year, $month, $day);
     }
 
@@ -978,7 +981,7 @@ trait ModifierTrait
      */
     public function firstOfQuarter($dayOfWeek = null)
     {
-        return $this->day(1)->month($this->quarter * 3 - 2)->firstOfMonth($dayOfWeek);
+        return $this->day(1)->month($this->quarter * ChronosInterface::MONTHS_PER_QUARTER - 2)->firstOfMonth($dayOfWeek);
     }
 
     /**
@@ -992,7 +995,7 @@ trait ModifierTrait
      */
     public function lastOfQuarter($dayOfWeek = null)
     {
-        return $this->day(1)->month($this->quarter * 3)->lastOfMonth($dayOfWeek);
+        return $this->day(1)->month($this->quarter * ChronosInterface::MONTHS_PER_QUARTER)->lastOfMonth($dayOfWeek);
     }
 
     /**
@@ -1007,7 +1010,7 @@ trait ModifierTrait
      */
     public function nthOfQuarter($nth, $dayOfWeek)
     {
-        $dt = $this->copy()->day(1)->month($this->quarter * 3);
+        $dt = $this->copy()->day(1)->month($this->quarter * ChronosInterface::MONTHS_PER_QUARTER);
         $lastMonth = $dt->month;
         $year = $dt->year;
         $dt = $dt->firstOfQuarter()->modify("+$nth" . static::$days[$dayOfWeek]);
@@ -1067,7 +1070,7 @@ trait ModifierTrait
     /**
      * Modify the current instance to the average of a given instance (default now) and the current instance.
      *
-     * @param ChronosInterface|null $dt The instance to compare with.
+     * @param \Cake\Chronos\ChronosInterface|null $dt The instance to compare with.
      * @return static
      */
     public function average(ChronosInterface $dt = null)

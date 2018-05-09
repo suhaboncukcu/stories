@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\View\Widget;
 
@@ -172,10 +172,14 @@ class RadioWidget implements WidgetInterface
         }
         if (isset($data['val']) && (string)$data['val'] === (string)$radio['value']) {
             $radio['checked'] = true;
+            $radio['templateVars']['activeClass'] = 'active';
         }
-        if ($this->_isDisabled($radio, $data['disabled'])) {
-            $radio['disabled'] = true;
+
+        if (!is_bool($data['label']) && isset($radio['checked']) && $radio['checked']) {
+            $data['label'] = $this->_templates->addClass($data['label'], 'selected');
         }
+
+        $radio['disabled'] = $this->_isDisabled($radio, $data['disabled']);
         if (!empty($data['required'])) {
             $radio['required'] = true;
         }
@@ -187,7 +191,7 @@ class RadioWidget implements WidgetInterface
             'name' => $radio['name'],
             'value' => $escape ? h($radio['value']) : $radio['value'],
             'templateVars' => $radio['templateVars'],
-            'attrs' => $this->_templates->formatAttributes($radio, ['name', 'value', 'text']),
+            'attrs' => $this->_templates->formatAttributes($radio + $data, ['name', 'value', 'text', 'options', 'label', 'val', 'type']),
         ]);
 
         $label = $this->_renderLabel(
@@ -222,7 +226,7 @@ class RadioWidget implements WidgetInterface
      * @param string $input The input widget.
      * @param \Cake\View\Form\ContextInterface $context The form context.
      * @param bool $escape Whether or not to HTML escape the label.
-     * @return string Generated label.
+     * @return string|bool Generated label.
      */
     protected function _renderLabel($radio, $label, $input, $context, $escape)
     {

@@ -1,19 +1,19 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  * @since         3.3.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\TestSuite;
 
-use Cake\Network\Request;
+use Cake\Http\ServerRequest;
 use Cake\Routing\DispatcherFactory;
 use Cake\TestSuite\Stub\Response;
 
@@ -25,6 +25,12 @@ use Cake\TestSuite\Stub\Response;
  */
 class LegacyRequestDispatcher
 {
+
+    /**
+     * @var \Cake\TestSuite\IntegrationTestCase
+     */
+    protected $_test;
+
     /**
      * Constructor
      *
@@ -39,20 +45,19 @@ class LegacyRequestDispatcher
      * Run a request and get the response.
      *
      * @param array $request The request context to execute.
-     * @return \Cake\Network\Response The generated response.
+     * @return string|null The generated response.
      */
     public function execute($request)
     {
-        $request = new Request($request);
+        $request = new ServerRequest($request);
         $response = new Response();
         $dispatcher = DispatcherFactory::create();
-        $dispatcher->eventManager()->on(
+        $dispatcher->getEventManager()->on(
             'Dispatcher.invokeController',
             ['priority' => 999],
             [$this->_test, 'controllerSpy']
         );
-        $dispatcher->dispatch($request, $response);
 
-        return $response;
+        return $dispatcher->dispatch($request, $response);
     }
 }

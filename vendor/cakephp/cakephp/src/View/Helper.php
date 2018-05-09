@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         0.2.9
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\View;
 
@@ -69,21 +69,21 @@ class Helper implements EventListenerInterface
      *
      * @var string
      */
-    public $theme = null;
+    public $theme;
 
     /**
      * Request object
      *
-     * @var \Cake\Network\Request
+     * @var \Cake\Http\ServerRequest
      */
-    public $request = null;
+    public $request;
 
     /**
      * Plugin path
      *
      * @var string
      */
-    public $plugin = null;
+    public $plugin;
 
     /**
      * Holds the fields ['field_name' => ['type' => 'string', 'length' => 100]],
@@ -118,7 +118,7 @@ class Helper implements EventListenerInterface
         $this->_View = $View;
         $this->request = $View->request;
 
-        $this->config($config);
+        $this->setConfig($config);
 
         if (!empty($this->helpers)) {
             $this->_helperMap = $View->helpers()->normalizeArray($this->helpers);
@@ -156,6 +156,16 @@ class Helper implements EventListenerInterface
     }
 
     /**
+     * Get the view instance this helper is bound to.
+     *
+     * @return \Cake\View\View The bound view instance.
+     */
+    public function getView()
+    {
+        return $this->_View;
+    }
+
+    /**
      * Returns a string to be used as onclick handler for confirm dialogs.
      *
      * @param string $message Message to be displayed
@@ -166,11 +176,12 @@ class Helper implements EventListenerInterface
      */
     protected function _confirm($message, $okCode, $cancelCode = '', $options = [])
     {
-        $message = str_replace('\n', "\n", json_encode($message));
+        $message = str_replace('\\\n', '\n', json_encode($message));
         $confirm = "if (confirm({$message})) { {$okCode} } {$cancelCode}";
         // We cannot change the key here in 3.x, but the behavior is inverted in this case
         $escape = isset($options['escape']) && $options['escape'] === false;
         if ($escape) {
+            /** @var string $confirm */
             $confirm = h($confirm);
         }
 
@@ -187,7 +198,9 @@ class Helper implements EventListenerInterface
      */
     public function addClass(array $options = [], $class = null, $key = 'class')
     {
-        if (isset($options[$key]) && trim($options[$key])) {
+        if (isset($options[$key]) && is_array($options[$key])) {
+            $options[$key][] = $class;
+        } elseif (isset($options[$key]) && trim($options[$key])) {
             $options[$key] .= ' ' . $class;
         } else {
             $options[$key] = $class;
@@ -254,7 +267,7 @@ class Helper implements EventListenerInterface
             'fieldset' => $this->fieldset,
             'tags' => $this->tags,
             'implementedEvents' => $this->implementedEvents(),
-            '_config' => $this->config(),
+            '_config' => $this->getConfig(),
         ];
     }
 }

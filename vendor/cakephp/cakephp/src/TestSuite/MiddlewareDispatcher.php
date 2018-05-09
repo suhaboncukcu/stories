@@ -1,21 +1,20 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  * @since         3.3.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\TestSuite;
 
 use Cake\Core\Configure;
 use Cake\Event\EventManager;
-use Cake\Http\ResponseTransformer;
 use Cake\Http\Server;
 use Cake\Http\ServerRequestFactory;
 use LogicException;
@@ -64,14 +63,14 @@ class MiddlewareDispatcher
     {
         $this->_test = $test;
         $this->_class = $class ?: Configure::read('App.namespace') . '\Application';
-        $this->_constructorArgs = $constructorArgs ?: ['./config'];
+        $this->_constructorArgs = $constructorArgs ?: [CONFIG];
     }
 
     /**
      * Run a request and get the response.
      *
-     * @param \Cake\Network\Request $request The request to execute.
-     * @return \Cake\Network\Response The generated response.
+     * @param \Cake\Http\ServerRequest $request The request to execute.
+     * @return \Psr\Http\Message\ResponseInterface The generated response.
      */
     public function execute($request)
     {
@@ -94,16 +93,15 @@ class MiddlewareDispatcher
 
         $server = new Server($app);
         $psrRequest = $this->_createRequest($request);
-        $response = $server->run($psrRequest);
 
-        return ResponseTransformer::toCake($response);
+        return $server->run($psrRequest);
     }
 
     /**
      * Create a PSR7 request from the request spec.
      *
      * @param array $spec The request spec.
-     * @return Psr\Http\Message\RequestInterface
+     * @return \Psr\Http\Message\RequestInterface
      */
     protected function _createRequest($spec)
     {
