@@ -39,9 +39,9 @@ class StoriesTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('stories');
-        $this->displayField('id');
-        $this->primaryKey('id');
+        $this->setTable('stories');
+        $this->setDisplayField('id');
+        $this->setPrimaryKey('id');
         $this->addBehavior('Timestamp');
 
         $userConfig = Configure::read('Stories.Users');
