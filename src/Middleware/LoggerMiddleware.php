@@ -51,6 +51,9 @@ class LoggerMiddleware
             $dataLoad['query'] = $request->getQuery();
             $dataLoad['postData'] = $request->getData();
             $messageLoad['data_load'] = $dataLoad;
+            if(strlen(print_r($dataLoad, TRUE)) > 500) {
+                $messageLoad['data_load'] = "Too long to log";
+            }
 
             $dataLoadArr = Hash::merge($dataLoad['postData'], $dataLoad['query'], $dataLoad['pass']);
             if(count(array_intersect(array_keys($dataLoadArr), Configure::read('Stories.DontLog.Fields'))) > 0) {
