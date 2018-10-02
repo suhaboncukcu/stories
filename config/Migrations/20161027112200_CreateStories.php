@@ -31,7 +31,7 @@ class CreateStories extends AbstractMigration
         $table->addColumn('ip', 'biginteger', [
             'default' => null,
             'limit' => 20,
-            'null' => false,
+            'null' => true,
         ]);
         $table->addColumn('user_id', 'integer', [
             'default' => null,

@@ -3,11 +3,19 @@ namespace Stories\Middleware;
 
 use Cake\Core\Configure;
 use Cake\Log\Log;
+use Cake\Network\Request;
+use Cake\Network\Response;
 use Cake\Utility\Hash;
 
 
 class LoggerMiddleware
 {
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param $next
+     * @return mixed
+     */
     public function __invoke($request, $response, $next)
     {
         // Calling $next() delegates control to the *next* middleware
@@ -49,7 +57,7 @@ class LoggerMiddleware
             $dataLoad = [];
             $dataLoad['pass'] = $attributes['params']['pass'];
             $dataLoad['query'] = $request->getQuery();
-            $dataLoad['postData'] = $request->getData();
+            $dataLoad['postData'] = $request->getParsedBody();
             $messageLoad['data_load'] = $dataLoad;
             if(strlen(print_r($dataLoad, TRUE)) > 500) {
                 $messageLoad['data_load'] = "Too long to log";

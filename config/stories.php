@@ -2,16 +2,17 @@
 return [
     'Stories' => [
         'Users' => [
-            'table' => 'MyUsers',
+            'table' => 'Users',
             'id' => 'id'
-        ], 
-        'DontLog' => [
-        	'Plugins' => [
-        		'DebugKit'
-        	]
         ],
-        [
-            'DataLogger' => true
-        ]
+        'DontLog' => [
+            'Plugins' => [
+                'DebugKit'
+            ],
+            'Fields' => [
+                'password'
+            ]
+        ],
+        'DataLogger' => true
     ]
 ];
