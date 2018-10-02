@@ -2,7 +2,7 @@
 return [
     'Stories' => [
         'Users' => [
-            'table' => 'Users',
+            'table' => 'Cms.Users',
             'id' => 'id'
         ],
         'DontLog' => [
@@ -13,6 +13,12 @@ return [
                 'password'
             ]
         ],
-        'DataLogger' => true
+        'DataLogger' => true,
+        'AllowTemplates' => [
+            'forField' => 'role',
+            'rule' => function ($fieldValue) {
+                return $fieldValue === 'superadmin' || $fieldValue === 'admin';
+            }
+        ]
     ]
 ];

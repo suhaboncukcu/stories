@@ -1,10 +1,15 @@
 <?php
 use Cake\Routing\Router;
 
-Router::plugin(
-    'Stories',
-    ['path' => '/stories'],
-    function ($routes) {
-        $routes->fallbacks('DashedRoute');
-    }
-);
+
+$allowTemplates = \Cake\Core\Configure::read('AllowTemplates');
+if($allowTemplates) {
+    Router::plugin(
+        'Stories',
+        ['path' => '/stories'],
+        function ($routes) {
+            $routes->fallbacks('DashedRoute');
+        }
+    );
+}
+

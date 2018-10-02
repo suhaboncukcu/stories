@@ -19,7 +19,8 @@ class StoriesController extends AppController
     public function index()
     {
         $this->paginate = [
-            'contain' => ['Users']
+            'contain' => ['Users'],
+            'order' => ['created' => 'DESC']
         ];
         $stories = $this->paginate($this->Stories);
 
